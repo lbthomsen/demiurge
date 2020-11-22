@@ -1,2 +1,2 @@
 # demiurge
-Demiurge Play
+Demiurge Experiments using Stm32CubeIde/Stm32CubeMx
