@@ -58,8 +58,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define AUD_PRE 0
-#define AUD_CNT 3499
+#define AUD_PRE 349
+#define AUD_CNT 9
 #define BUILTIN_LED_Pin GPIO_PIN_13
 #define BUILTIN_LED_GPIO_Port GPIOC
 #define DBG0_Pin GPIO_PIN_0

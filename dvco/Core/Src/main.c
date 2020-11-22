@@ -74,7 +74,7 @@ float osc1_angle_per_sample = 0;
 float osc1_amp = 0.99;
 float osc2_angle = 0;
 float osc2_angle_per_sample = 0;
-float osc2_amp = 0.99;
+float osc2_amp = 1;
 
 uint32_t dac_count = 0; // Count dma buffer transfers
 uint32_t adc_count = 0; //
@@ -125,7 +125,7 @@ static inline void update_pots(uint16_t *sample_ptr) {
 	pot0 = pot0_value / BUFFER_SIZE;
 	pot1 = pot1_value / BUFFER_SIZE;
 
-	set_osc1_freq((float) (4096 - pot0));
+	set_osc1_freq((float) (4096 - pot0) / 4);
 	osc1_amp = (float) (4096.0 - pot1) / 4096;
 
 	adc_count++;
