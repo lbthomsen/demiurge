@@ -6,7 +6,7 @@
  ******************************************************************************
  * @attention
  *
- * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+ * <h2><center>&copy; Copyright (c) 2020 Lars Boegild Thomsen <lbthomsen@gmail.com>.
  * All rights reserved.</center></h2>
  *
  * This software component is licensed by lbthomsen under MIT license,
@@ -22,6 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+// Relies on arm's optimised floating point library to get math done quick
 #include "arm_math.h"
 /* USER CODE END Includes */
 
@@ -33,9 +35,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
-#define M_PI2 2 * M_PI
+#define M_PI2 2 * M_PI // Full Circle
 
-#define SAMPLE_FREQUENCY 48000
+#define SAMPLE_FREQUENCY 48000 // TIM8
 #define BUFFER_SIZE 48
 #define DAC_MAX 4095
 #define DAC_MID 2047
@@ -69,9 +71,9 @@ uint16_t *dac1_buffer_ptr = dac1_buffer;
 uint16_t *dac2_buffer_ptr = dac2_buffer;
 
 // Stuff used for wave calculations
-float osc1_angle = 0;
-float osc1_angle_per_sample = 0;
-float osc1_amp = 0.99;
+float osc1_angle = 0;				// Current angle
+float osc1_angle_per_sample = 0;    // Angular velocity - calculated from freq
+float osc1_amp = 1;
 float osc2_angle = 0;
 float osc2_angle_per_sample = 0;
 float osc2_amp = 1;
@@ -99,6 +101,8 @@ static void MX_TIM8_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+// Technically we're not interested in frequency but instead
+// immediately calculate the angular velocity.
 void set_osc1_freq(float freq) {
 	osc1_angle_per_sample = M_PI2 / (SAMPLE_FREQUENCY / freq);
 }
@@ -414,7 +418,7 @@ static void MX_DAC_Init(void)
   /** DAC channel OUT1 config
   */
   sConfig.DAC_Trigger = DAC_TRIGGER_T8_TRGO;
-  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
   if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
