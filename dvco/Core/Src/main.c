@@ -57,6 +57,8 @@ DAC_HandleTypeDef hdac;
 DMA_HandleTypeDef hdma_dac1;
 DMA_HandleTypeDef hdma_dac2;
 
+I2C_HandleTypeDef hi2c1;
+
 TIM_HandleTypeDef htim8;
 
 /* USER CODE BEGIN PV */
@@ -94,6 +96,7 @@ static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_TIM8_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -129,8 +132,8 @@ static inline void update_pots(uint16_t *sample_ptr) {
 	pot0 = pot0_value / BUFFER_SIZE;
 	pot1 = pot1_value / BUFFER_SIZE;
 
-	set_osc1_freq((float) (4096 - pot0) / 4);
-	osc1_amp = (float) (4096.0 - pot1) / 4096;
+	//set_osc1_freq((float) (4096 - pot0) / 4);
+	//osc1_amp = (float) (4096.0 - pot1) / 4096;
 
 	adc_count++;
 
@@ -236,6 +239,7 @@ int main(void)
   MX_ADC1_Init();
   MX_DAC_Init();
   MX_TIM8_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
 	HAL_TIM_Base_Start_IT(&htim8);
@@ -247,8 +251,11 @@ int main(void)
 	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_2, (uint32_t *)dac2_buffer, BUFFER_SIZE * 2,
 			DAC_ALIGN_12B_R);
 
-	set_osc1_freq(110);
-	set_osc2_freq(55);
+	set_osc1_freq(1001);
+	osc1_amp = 0.99;
+
+	set_osc2_freq(880);
+	osc2_amp = 0.9;
 
   /* USER CODE END 2 */
 
@@ -436,6 +443,40 @@ static void MX_DAC_Init(void)
 }
 
 /**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
   * @brief TIM8 Initialization Function
   * @param None
   * @retval None
@@ -517,6 +558,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(BUILTIN_LED_GPIO_Port, BUILTIN_LED_Pin, GPIO_PIN_SET);
