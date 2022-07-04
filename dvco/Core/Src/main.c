@@ -251,10 +251,10 @@ int main(void)
 	HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_2, (uint32_t *)dac2_buffer, BUFFER_SIZE * 2,
 			DAC_ALIGN_12B_R);
 
-	set_osc1_freq(1001);
+	set_osc1_freq(440);
 	osc1_amp = 0.99;
 
-	set_osc2_freq(880);
+	set_osc2_freq(441);
 	osc2_amp = 0.9;
 
   /* USER CODE END 2 */
